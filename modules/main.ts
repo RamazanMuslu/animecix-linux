@@ -13,7 +13,7 @@ import { DeeplinkController } from "./controllers/deeplink-controller";
 export class Main {
   win: WindowController | null = null;
 
-  constructor(public dir: any) {}
+  constructor(public dir: any) { }
 
   run() {
     const gotTheLock = app.requestSingleInstanceLock();
@@ -31,7 +31,7 @@ export class Main {
             contextIsolation: false,
             nodeIntegrationInSubFrames: true,
             preload: this.dir + "/files/preload.js",
-            
+
           },
           title: "AnimeciX",
           icon: path.join(this.dir, "files", "icon.png"),
@@ -51,8 +51,16 @@ export class Main {
           win.setProgressBar(-1);
         });
 
+        win.webContents.on("did-finish-load", () => {
+          win.webContents.insertCSS(`
+            .cet-window-controls {
+              right: 0px !important;
+            }
+          `);
+        });
+
         //win.webContents.openDevTools()
-        
+
 
         // Check for updates
         const updater = new Updater(this.win);
@@ -96,21 +104,21 @@ export class Main {
       // { role: 'appMenu' }
       ...(isMac
         ? [
-            {
-              label: app.name,
-              submenu: [
-                { role: "about" },
-                { type: "separator" },
-                { role: "services" },
-                { type: "separator" },
-                { role: "hide" },
-                { role: "hideOthers" },
-                { role: "unhide" },
-                { type: "separator" },
-                { role: "quit" },
-              ],
-            },
-          ]
+          {
+            label: app.name,
+            submenu: [
+              { role: "about" },
+              { type: "separator" },
+              { role: "services" },
+              { type: "separator" },
+              { role: "hide" },
+              { role: "hideOthers" },
+              { role: "unhide" },
+              { type: "separator" },
+              { role: "quit" },
+            ],
+          },
+        ]
         : []),
       // { role: 'fileMenu' }
       {
@@ -129,23 +137,23 @@ export class Main {
           { role: "paste" },
           ...(isMac
             ? [
-                { role: "pasteAndMatchStyle" },
-                { role: "delete" },
-                { role: "selectAll" },
-                { type: "separator" },
-                {
-                  label: "Speech",
-                  submenu: [
-                    { role: "startSpeaking" },
-                    { role: "stopSpeaking" },
-                  ],
-                },
-              ]
+              { role: "pasteAndMatchStyle" },
+              { role: "delete" },
+              { role: "selectAll" },
+              { type: "separator" },
+              {
+                label: "Speech",
+                submenu: [
+                  { role: "startSpeaking" },
+                  { role: "stopSpeaking" },
+                ],
+              },
+            ]
             : [
-                { role: "delete" },
-                { type: "separator" },
-                { role: "selectAll" },
-              ]),
+              { role: "delete" },
+              { type: "separator" },
+              { role: "selectAll" },
+            ]),
         ],
       },
       // { role: 'viewMenu' }
@@ -170,11 +178,11 @@ export class Main {
           { role: "zoom" },
           ...(isMac
             ? [
-                { type: "separator" },
-                { role: "front" },
-                { type: "separator" },
-                { role: "window" },
-              ]
+              { type: "separator" },
+              { role: "front" },
+              { type: "separator" },
+              { role: "window" },
+            ]
             : [{ role: "close" }]),
         ],
       },

@@ -4,9 +4,10 @@ import { WindowController } from "./controllers/window-controller";
 import { NotificationHelper } from "./helpers/notification-helper";
 
 export class Updater {
-  constructor(private win: WindowController) {}
+  constructor(private win: WindowController) { }
 
   public execute() {
+    if (!require("electron").app.isPackaged) return;
     autoUpdater.checkForUpdates();
 
     autoUpdater.on("update-available", async (info: UpdateInfo) => {
